@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -89,6 +90,15 @@ public abstract class ChoppedLogBakedModel extends WrapperBlockStateModel {
     @Override
     public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
         // Custom rendering is done via emitQuads (FabricBlockStateModel); collectParts is unused
+    }
+
+    @Override
+    public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        if (level.getBlockEntity(pos) instanceof ChoppedLogBlock.MyEntity entity) {
+            BlockState originalState = entity.getOriginalState();
+            return getBlockModel(originalState).particleMaterial(level, pos, originalState);
+        }
+        return super.particleMaterial(level, pos, state);
     }
 
     public void setWrapped(BlockStateModel model) {
