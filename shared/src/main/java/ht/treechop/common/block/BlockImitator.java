@@ -37,15 +37,15 @@ public abstract class BlockImitator extends Block {
     }
 
     @Override
-    public void fallOn(Level level, BlockState blockState, BlockPos pos, Entity entity, float speed) {
+    public void fallOn(Level level, BlockState blockState, BlockPos pos, Entity entity, double speed) {
         BlockState imitatedBlockState = getImitatedBlockState(level, pos);
         imitatedBlockState.getBlock().fallOn(level, imitatedBlockState, pos, entity, speed);
     }
 
     @Override
-    public @NotNull ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState blockState) {
+    public @NotNull ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState blockState, boolean includeData) {
         BlockState imitatedBlockState = getImitatedBlockState(level, pos);
-        return imitatedBlockState.getBlock().getCloneItemStack(level, pos, imitatedBlockState);
+        return imitatedBlockState.getCloneItemStack(level, pos, includeData);
     }
 
     @Override
@@ -55,8 +55,8 @@ public abstract class BlockImitator extends Block {
     }
 
     @Override
-    public int getLightBlock(BlockState blockState, BlockGetter level, BlockPos pos) {
-        return super.getLightBlock(blockState, level, pos);
+    protected int getLightDampening(BlockState blockState) {
+        return super.getLightDampening(blockState);
     }
 
     @Override
@@ -65,8 +65,8 @@ public abstract class BlockImitator extends Block {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos) {
-        return getImitatedBlockState(level, pos).getAnalogOutputSignal(level, pos);
+    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos, Direction direction) {
+        return getImitatedBlockState(level, pos).getAnalogOutputSignal(level, pos, direction);
     }
 
     @Override

@@ -7,11 +7,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class ServerUpdateChopsPacket implements CustomPacketPayload {
-    public static final ResourceLocation ID = TreeChop.resource("server_update_chops");
+    public static final Identifier ID = TreeChop.resource("server_update_chops");
     public static final CustomPacketPayload.Type<ServerUpdateChopsPacket> TYPE = new CustomPacketPayload.Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, ServerUpdateChopsPacket> STREAM_CODEC = CustomPacketPayload.codec(
             ServerUpdateChopsPacket::encode, ServerUpdateChopsPacket::decode

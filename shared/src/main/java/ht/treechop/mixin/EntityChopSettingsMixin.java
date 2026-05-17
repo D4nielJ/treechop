@@ -36,7 +36,7 @@ public class EntityChopSettingsMixin implements ChoppingEntity {
 
     @Inject(method = "load", at = @At("HEAD"))
     public void injectDataLoading(CompoundTag tag, CallbackInfo info) {
-        CompoundTag data = tag.getCompound(KEY);
+        CompoundTag data = tag.getCompound(KEY).orElseGet(net.minecraft.nbt.CompoundTag::new);
         chopSettings = (new SyncedChopData(new ChopSettings())).readSaveData(data);
     }
 }

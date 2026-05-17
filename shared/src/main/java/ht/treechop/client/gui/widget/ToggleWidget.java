@@ -1,6 +1,6 @@
 package ht.treechop.client.gui.widget;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import ht.treechop.client.gui.util.Sprite;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -28,7 +28,7 @@ public class ToggleWidget extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor gui, int mouseX, int mouseY, float partialTicks) {
         this.active = !stateSupplier.get().isLocked;
 
         Sprite.setRenderState(this.alpha);

@@ -1,5 +1,5 @@
 plugins {
-    id "fabric-loom" version "1.7-SNAPSHOT" apply false
+    id "net.fabricmc.fabric-loom" version "1.16-SNAPSHOT" apply false
     id "org.spongepowered.gradle.vanilla" version "0.2.1-SNAPSHOT" apply false
     id "org.spongepowered.mixin" version "0.7-SNAPSHOT" apply false
 }
@@ -10,7 +10,7 @@ subprojects {
     apply plugin: "idea"
     apply plugin: 'maven-publish'
 
-    java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+    java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
     repositories {
         mavenCentral()
@@ -51,6 +51,6 @@ subprojects {
 
     tasks.withType(JavaCompile).configureEach {
         it.options.encoding = "UTF-8"
-        it.options.release = 21
+        it.options.release = 25
     }
 }

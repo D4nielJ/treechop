@@ -134,7 +134,7 @@ public class FellTreeResult implements ChopResult {
 
     private static void decayLeavesInsteadOfBreaking(ServerLevel level, BlockPos pos, BlockState state) {
         BlockState decayingState = state.setValue(LeavesBlock.PERSISTENT, false).setValue(LeavesBlock.DISTANCE, LeavesBlock.DECAY_DISTANCE);
-        decayingState.randomTick(level, pos, level.random);
+        decayingState.randomTick(level, pos, level.getRandom());
     }
 
     private static boolean shouldDecayLeaves(BlockState blockState) {

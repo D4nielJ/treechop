@@ -42,7 +42,7 @@
     "forgeconfigapiport": "*",
     "fabricloader": "*",
     "fabric-api": "*",
-    "minecraft": "~${minecraft_version}",
+    "minecraft": "~26.1.0",
     "java": ">=21"
   },
   "suggests": {

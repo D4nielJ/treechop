@@ -12,7 +12,7 @@ import ht.treechop.compat.LeafDecayOverrides;
 import ht.treechop.compat.ProblematicLeavesTreeHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -124,26 +124,26 @@ public class ConfigHandler {
     }
 
     private static Block inferUnstripped(Block block) {
-        ResourceLocation resource = BuiltInRegistries.BLOCK.getKey(block);
+        Identifier resource = BuiltInRegistries.BLOCK.getKey(block);
         return inferUnstripped(resource);
     }
 
-    private static Block inferUnstripped(ResourceLocation resource) {
+    private static Block inferUnstripped(Identifier resource) {
         if (resource != null) {
-            ResourceLocation unstripped = getFilteredResourceLocation(resource, "stripped");
+            Identifier unstripped = getFilteredResourceLocation(resource, "stripped");
             if (unstripped != null) {
-                return BuiltInRegistries.BLOCK.get(unstripped);
+                return BuiltInRegistries.BLOCK.getValue(unstripped);
             }
         }
         return Blocks.AIR;
     }
 
-    private static ResourceLocation getFilteredResourceLocation(ResourceLocation resource, String filterTerm) {
+    private static Identifier getFilteredResourceLocation(Identifier resource, String filterTerm) {
         if (resource != null) {
             String strippedPath = resource.getPath();
             String unstrippedPath = Arrays.stream(strippedPath.split("_")).filter(token -> !token.equals(filterTerm)).collect(Collectors.joining("_"));
             if (!strippedPath.equals(unstrippedPath)) {
-                return ResourceLocation.fromNamespaceAndPath(resource.getNamespace(), unstrippedPath);
+                return Identifier.fromNamespaceAndPath(resource.getNamespace(), unstrippedPath);
             }
         }
         return null;

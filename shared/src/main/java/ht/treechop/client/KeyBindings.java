@@ -6,6 +6,7 @@ import ht.treechop.client.gui.screen.ClientSettingsScreen;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.LinkedList;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class KeyBindings {
-    public static final String CATEGORY = "HT's TreeChop";
+    public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("treechop", "category"));
 
     public static final List<ActionableKeyBinding> allKeyBindings = new LinkedList<>();
 
@@ -37,7 +38,7 @@ public class KeyBindings {
     }
 
     static InputConstants.Key getKey(int key) {
-        return InputConstants.getKey(key, 0);
+        return InputConstants.Type.KEYSYM.getOrCreate(key);
     }
 
     public static class ActionableKeyBinding extends KeyMapping {

@@ -1,7 +1,7 @@
 package ht.treechop.common.config.resource;
 
 import net.minecraft.core.DefaultedRegistry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -15,11 +15,11 @@ public class SingleResourceIdentifier extends ResourceIdentifier {
     @Override
     public <R extends DefaultedRegistry<T>, T> Stream<T> resolve(R registry) {
         String resourceString = getNamespace() + ":" + getLocalSpace();
-        ResourceLocation key = ResourceLocation.tryParse(resourceString);
+        Identifier key = Identifier.tryParse(resourceString);
         if (key != null) {
             if (registry.containsKey(key)) {
-                T resource = registry.get(key);
-                ResourceLocation defaultKey = registry.getDefaultKey();
+                T resource = registry.getValue(key);
+                Identifier defaultKey = registry.getDefaultKey();
                 if (!registry.getKey(resource).equals(defaultKey) || key.equals(defaultKey)) {
                     return Stream.of(resource);
                 }

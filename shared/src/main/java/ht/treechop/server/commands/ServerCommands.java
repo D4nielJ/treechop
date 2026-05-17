@@ -14,10 +14,12 @@ import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
+import net.minecraft.server.permissions.Permissions;
+
 public class ServerCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("treechop")
-                .requires(source -> source.hasPermission(2));
+                .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER));
 
         builder.then(Commands.literal("chop")
                 .then(Commands.argument("chopPos", BlockPosArgument.blockPos())
