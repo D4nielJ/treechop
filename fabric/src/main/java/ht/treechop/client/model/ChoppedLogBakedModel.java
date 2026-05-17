@@ -30,7 +30,7 @@ public abstract class ChoppedLogBakedModel extends WrapperBlockStateModel {
         return ChopUtil.getStrippedState(level, pos, level.getBlockState(neighborPos));
     }
 
-    protected static Map<Direction, BlockState> getStrippedNeighbors(BlockAndTintGetter level, BlockPos pos, ChoppedLogBlock.MyEntity entity) {
+    public static Map<Direction, BlockState> getStrippedNeighbors(BlockAndTintGetter level, BlockPos pos, ChoppedLogBlock.MyEntity entity) {
         if (entity.getOriginalState().isSolidRender()) {
             return entity.streamSolidSides(level, pos).collect(Collectors.toMap(
                     side -> side,
@@ -86,10 +86,10 @@ public abstract class ChoppedLogBakedModel extends WrapperBlockStateModel {
         }
     }
 
-    // Fallback collectParts: emit nothing (subclasses override emitQuads via FabricBlockStateModel)
+    // Fallback collectParts: delegate to wrapped (oak log) model for crack animation
     @Override
     public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
-        // Custom rendering is done via emitQuads (FabricBlockStateModel); collectParts is unused
+        wrapped.collectParts(random, parts);
     }
 
     @Override
