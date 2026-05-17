@@ -50,11 +50,11 @@ public enum Sprite {
     }
 
     public void blit(GuiGraphicsExtractor gui, int x, int y, int width, int height, boolean mirror) {
-        float u = (mirror ? this.u + this.width : this.u) / (float) TEXTURE_WIDTH;
-        float v = this.v / (float) TEXTURE_HEIGHT;
-        float uw = (mirror ? -this.width : this.width) / (float) TEXTURE_WIDTH;
-        float vh = this.height / (float) TEXTURE_HEIGHT;
-        gui.blit(TEXTURE_PATH, x, y, width, height, u, v, uw, vh);
+        float u0 = (mirror ? this.u + this.width : this.u) / (float) TEXTURE_WIDTH;
+        float u1 = (mirror ? this.u : this.u + this.width) / (float) TEXTURE_WIDTH;
+        float v0 = this.v / (float) TEXTURE_HEIGHT;
+        float v1 = (this.v + this.height) / (float) TEXTURE_HEIGHT;
+        gui.blit(TEXTURE_PATH, x, y, x + width, y + height, u0, u1, v0, v1);
     }
 
 }

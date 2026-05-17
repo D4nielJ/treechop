@@ -258,7 +258,10 @@ public class ChopUtil {
             final float volume = .3f;
             final float pitch = 1f;
             level.playSound(thwacker, pos, TreeChop.CHOP_WOOD_EVENT.get(), SoundSource.BLOCKS, volume, pitch);
-            level.addDestroyBlockEffect(pos, state);
+            BlockState particleState = (state.getBlock() instanceof ChoppedLogBlock choppedLogBlock)
+                    ? choppedLogBlock.getImitatedBlockState(level, pos)
+                    : state;
+            level.addDestroyBlockEffect(pos, particleState);
         }
     }
 
