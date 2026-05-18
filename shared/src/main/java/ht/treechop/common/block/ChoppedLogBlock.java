@@ -21,7 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +29,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
@@ -42,6 +43,11 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -137,12 +143,9 @@ public abstract class ChoppedLogBlock extends BlockImitator implements IChoppabl
 
     @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
-        if (ConfigHandler.removeBarkOnInteriorLogs.get() && level.getBlockEntity(pos) instanceof ChoppedLogBlock.MyEntity entity && entity.getOriginalState().isSolidRender(level, pos)) {
-            return entity.getOcclusionShape(level, pos);
-        } else {
-            return Shapes.empty();
-        }
+    public VoxelShape getOcclusionShape(BlockState state) {
+        // level/pos no longer accessible from getOcclusionShape; return empty since dynamic shape
+        return Shapes.empty();
     }
 
     @SuppressWarnings("deprecation")
@@ -222,7 +225,7 @@ public abstract class ChoppedLogBlock extends BlockImitator implements IChoppabl
         }
 
         if (level instanceof ServerLevel serverLevel) {
-            ResourceLocation chopLootTableId = BuiltInRegistries.BLOCK.getKey(this.asBlock()).withPrefix("chopping/");
+            Identifier chopLootTableId = BuiltInRegistries.BLOCK.getKey(this.asBlock()).withPrefix("chopping/");
             ResourceKey<LootTable> chopLootTableKey = ResourceKey.create(Registries.LOOT_TABLE, chopLootTableId);
             LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(chopLootTableKey);
             int finalBlockChopCount = currentNumChops + numAddedChops;
@@ -265,7 +268,7 @@ public abstract class ChoppedLogBlock extends BlockImitator implements IChoppabl
         };
 
         return Arrays.stream(waterSourceDirections)
-                .filter(direction -> level.getFluidState(pos.offset(direction.getNormal())).isSource())
+                .filter(direction -> level.getFluidState(pos.offset(direction.getUnitVec3i())).isSource())
                 .limit(2)
                 .count() == 2;
     }
@@ -276,16 +279,16 @@ public abstract class ChoppedLogBlock extends BlockImitator implements IChoppabl
     }
 
     @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState blockState, Direction side, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(BlockState blockState, LevelReader level, ScheduledTickAccess tickAccess, BlockPos pos, Direction side, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
         if (blockState.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         if (level.getBlockEntity(pos) instanceof MyEntity entity) {
             entity.rerender();
         }
 
-        return super.updateShape(blockState, side, neighborState, level, pos, neighborPos);
+        return super.updateShape(blockState, level, tickAccess, pos, side, neighborPos, neighborState, random);
     }
 
     @SuppressWarnings("deprecation")
@@ -295,7 +298,7 @@ public abstract class ChoppedLogBlock extends BlockImitator implements IChoppabl
         List<ItemStack> stacks = new ArrayList<>(super.getDrops(blockState, context));
 
         if (ConfigHandler.COMMON.dropLootForChoppedBlocks.get() && context.getOptionalParameter(LootContextParams.BLOCK_ENTITY) instanceof MyEntity entity) {
-            ItemStack tool = context.getOptionalParameter(LootContextParams.TOOL);
+            net.minecraft.world.item.ItemInstance tool = context.getOptionalParameter(LootContextParams.TOOL);
             Entity player = context.getOptionalParameter(LootContextParams.THIS_ENTITY);
             stacks.addAll(Block.getDrops(entity.originalState, context.getLevel(), entity.getBlockPos(), entity, player, (tool == null) ? ItemStack.EMPTY : tool));
         }
@@ -378,41 +381,41 @@ public abstract class ChoppedLogBlock extends BlockImitator implements IChoppabl
         }
 
         @Override
-        public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider lookup) {
-            super.saveAdditional(tag, lookup);
+        public void saveAdditional(@Nonnull ValueOutput output) {
+            super.saveAdditional(output);
 
-            tag.putInt(KEY_ORIGINAL_STATE, Block.getId(getOriginalState()));
-            tag.putInt(KEY_CHOPS, getChops());
-            tag.putInt(KEY_SHAPE, getShape().ordinal());
+            output.putInt(KEY_ORIGINAL_STATE, Block.getId(getOriginalState()));
+            output.putInt(KEY_CHOPS, getChops());
+            output.putInt(KEY_SHAPE, getShape().ordinal());
 
             if (unchoppedRadius != DEFAULT_UNCHOPPED_RADIUS) {
-                tag.putInt(KEY_UNCHOPPED_RADIUS, unchoppedRadius);
+                output.putInt(KEY_UNCHOPPED_RADIUS, unchoppedRadius);
             }
 
             if (maxNumChops != DEFAULT_MAX_NUM_CHOPS) {
-                tag.putInt(KEY_MAX_NUM_CHOPS, maxNumChops);
+                output.putInt(KEY_MAX_NUM_CHOPS, maxNumChops);
             }
 
             if (supportFactor != DEFAULT_SUPPORT_FACTOR) {
-                tag.putDouble(KEY_SUPPORT_FACTOR, supportFactor);
+                output.putDouble(KEY_SUPPORT_FACTOR, supportFactor);
             }
         }
 
         @Override
-        public void loadAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider lookup) {
-            super.loadAdditional(tag, lookup);
+        public void loadAdditional(@Nonnull ValueInput input) {
+            super.loadAdditional(input);
 
             int hash = hashCode();
 
-            int stateId = tag.getInt(KEY_ORIGINAL_STATE);
+            int stateId = input.getIntOr(KEY_ORIGINAL_STATE, 0);
             setOriginalState(stateId > 0 ? Block.stateById(stateId) : Blocks.OAK_LOG.defaultBlockState());
 
-            setChops(tag.getInt(KEY_CHOPS));
-            setShape(ChoppedLogShape.values()[tag.getInt(KEY_SHAPE)]);
+            setChops(input.getIntOr(KEY_CHOPS, 1));
+            setShape(ChoppedLogShape.values()[input.getIntOr(KEY_SHAPE, 0)]);
 
-            int unchoppedRadius = (tag.contains(KEY_UNCHOPPED_RADIUS)) ? tag.getInt(KEY_UNCHOPPED_RADIUS) : DEFAULT_UNCHOPPED_RADIUS;
-            int maxNumChops = (tag.contains(KEY_MAX_NUM_CHOPS)) ? tag.getInt(KEY_MAX_NUM_CHOPS) : DEFAULT_MAX_NUM_CHOPS;
-            double supportFactor = (tag.contains(KEY_SUPPORT_FACTOR)) ? tag.getInt(KEY_SUPPORT_FACTOR) : DEFAULT_SUPPORT_FACTOR;
+            int unchoppedRadius = input.getIntOr(KEY_UNCHOPPED_RADIUS, DEFAULT_UNCHOPPED_RADIUS);
+            int maxNumChops = input.getIntOr(KEY_MAX_NUM_CHOPS, DEFAULT_MAX_NUM_CHOPS);
+            double supportFactor = input.getDoubleOr(KEY_SUPPORT_FACTOR, DEFAULT_SUPPORT_FACTOR);
             setParameters(unchoppedRadius, maxNumChops, supportFactor);
 
             if (hash != hashCode()) {

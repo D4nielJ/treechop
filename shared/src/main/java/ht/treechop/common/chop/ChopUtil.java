@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -258,7 +258,10 @@ public class ChopUtil {
             final float volume = .3f;
             final float pitch = 1f;
             level.playSound(thwacker, pos, TreeChop.CHOP_WOOD_EVENT.get(), SoundSource.BLOCKS, volume, pitch);
-            level.addDestroyBlockEffect(pos, state);
+            BlockState particleState = (state.getBlock() instanceof ChoppedLogBlock choppedLogBlock)
+                    ? choppedLogBlock.getImitatedBlockState(level, pos)
+                    : state;
+            level.addDestroyBlockEffect(pos, particleState);
         }
     }
 

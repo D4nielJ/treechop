@@ -7,15 +7,15 @@ import mcp.mobius.waila.api.component.ItemComponent;
 import mcp.mobius.waila.api.component.WrappedComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import java.util.Optional;
 
 public class Wthit implements IWailaCommonPlugin, IWailaClientPlugin, IBlockComponentProvider {
-    public static final ResourceLocation SHOW_TREE_BLOCKS = TreeChop.resource("show_tree_block_counts");
-    public static final ResourceLocation SHOW_NUM_CHOPS_REMAINING = TreeChop.resource("show_num_chops_remaining");
+    public static final Identifier SHOW_TREE_BLOCKS = TreeChop.resource("show_tree_block_counts");
+    public static final Identifier SHOW_NUM_CHOPS_REMAINING = TreeChop.resource("show_num_chops_remaining");
     private static final Wthit INSTANCE = new Wthit();
 
     @Override

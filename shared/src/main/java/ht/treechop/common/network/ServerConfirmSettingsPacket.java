@@ -5,7 +5,7 @@ import ht.treechop.client.Client;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ServerConfirmSettingsPacket implements CustomPacketPayload {
-    public static final ResourceLocation ID = TreeChop.resource("server_confirm_settings");
+    public static final Identifier ID = TreeChop.resource("server_confirm_settings");
     public static final CustomPacketPayload.Type<ServerConfirmSettingsPacket> TYPE = new CustomPacketPayload.Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, ServerConfirmSettingsPacket> STREAM_CODEC = CustomPacketPayload.codec(
             ServerConfirmSettingsPacket::encode, ServerConfirmSettingsPacket::decode

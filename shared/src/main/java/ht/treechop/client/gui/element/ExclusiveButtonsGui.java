@@ -1,9 +1,9 @@
 package ht.treechop.client.gui.element;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import ht.treechop.client.gui.util.GUIUtil;
 import ht.treechop.client.gui.widget.StickyWidget;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -52,7 +52,7 @@ public class ExclusiveButtonsGui extends NestedGui {
     }
 
     @Override
-    public void renderWidget(GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor gui, int mouseX, int mouseY, float partialTicks) {
         int x = getBox().getLeft();
         int y = getBox().getTop();
 
@@ -62,7 +62,7 @@ public class ExclusiveButtonsGui extends NestedGui {
         for (AbstractWidget widget : widgets) {
             widget.setX(maxX);
             widget.setY(y);
-            widget.render(gui, mouseX, mouseY, partialTicks);
+            widget.extractRenderState(gui, mouseX, mouseY, partialTicks);
 
             maxX = Math.max(maxX, maxX + widget.getWidth());
             maxY = Math.max(maxY, y + widget.getHeight());

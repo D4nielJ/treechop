@@ -1,5 +1,5 @@
 plugins {
-    id "fabric-loom"
+    id "net.fabricmc.fabric-loom"
 }
 
 version = mod_version
@@ -31,38 +31,34 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:$minecraft_version"
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-$minecraft_version:$parchment_mappings_version@zip")
-    }
-    modImplementation "net.fabricmc:fabric-loader:$fabric_loader_version"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:$fabric_api_version"
+    implementation "net.fabricmc:fabric-loader:$fabric_loader_version"
+    implementation "net.fabricmc.fabric-api:fabric-api:$fabric_api_version"
 
     implementation project(":shared")
     implementation project(":tuber")
 
-    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:$forgeconfigapiport_version"
-    modApi "com.terraformersmc:modmenu:11.0.3"
+    api "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:$forgeconfigapiport_version"
+    api "com.terraformersmc:modmenu:18.0.0-beta.1"
 
-    modCompileOnly "mcp.mobius.waila:wthit-api:fabric-12.4.2"
-    modRuntimeOnly "mcp.mobius.waila:wthit:fabric-12.4.2"
-    modRuntimeOnly "lol.bai:badpackets:fabric-0.8.1"
+    compileOnly "mcp.mobius.waila:wthit-api:fabric-19.0.1"
+    runtimeOnly "mcp.mobius.waila:wthit:fabric-19.0.1"
+    runtimeOnly "lol.bai:badpackets:fabric-0.12.2"
 
-    modCompileOnly "curse.maven:jade-324717:5571122"
-//    modRuntimeOnly "curse.maven:jade-324717:5571122"
+    compileOnly "curse.maven:jade-324717:8048381"
+//    runtimeOnly "curse.maven:jade-324717:5571122"
 
-//    modRuntimeOnly "maven.modrinth:sodium:mc1.19.3-0.4.9" // Doesn't wanna work in IntelliJ
-//    modRuntimeOnly "curse.maven:indium-459496:3957480"
-//    modRuntimeOnly "curse.maven:irisshaders-455508:3981799"
+//    runtimeOnly "maven.modrinth:sodium:mc1.19.3-0.4.9" // Doesn't wanna work in IntelliJ
+//    runtimeOnly "curse.maven:indium-459496:3957480"
+//    runtimeOnly "curse.maven:irisshaders-455508:3981799"
 
-//    modCompileOnly "curse.maven:carry-on-274259:4160654"
-//    modRuntimeOnly "curse.maven:carry-on-274259:4160654"
+//    compileOnly "curse.maven:carry-on-274259:4160654"
+//    runtimeOnly "curse.maven:carry-on-274259:4160654"
 
-//    modRuntimeOnly "curse.maven:terrablender-565956:4647092"
-//    modRuntimeOnly "curse.maven:bclib-495191:4677965"
-//    modRuntimeOnly "curse.maven:betterend-413596:4677967"
+//    runtimeOnly "curse.maven:terrablender-565956:4647092"
+//    runtimeOnly "curse.maven:bclib-495191:4677965"
+//    runtimeOnly "curse.maven:betterend-413596:4677967"
 
-    modCompileOnly "com.terraformersmc.terraform-api:terraform-wood-api-v1:10.0.0"
+    compileOnly "com.terraformersmc.terraform-api:terraform-wood-api-v1:17.0.0-alpha.6"
 
 }
 
@@ -76,9 +72,6 @@ processResources {
 }
 
 loom {
-    mixin {
-        defaultRefmapName.set("${mod_id}.mixins.refmap.json")
-    }
     runs {
         client {
             client()

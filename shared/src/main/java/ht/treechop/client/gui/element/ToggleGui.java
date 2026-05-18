@@ -1,9 +1,9 @@
 package ht.treechop.client.gui.element;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import ht.treechop.client.gui.util.GUIUtil;
 import ht.treechop.client.gui.widget.ToggleWidget;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -30,10 +30,10 @@ public class ToggleGui extends NestedGui {
     }
 
     @Override
-    public void renderWidget(GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor gui, int mouseX, int mouseY, float partialTicks) {
         widget.setX(getBox().getLeft());
         widget.setY(getBox().getTop());
-        widget.render(gui, mouseX, mouseY, partialTicks);
+        widget.extractRenderState(gui, mouseX, mouseY, partialTicks);
 
         if (widget.isHoveredOrFocused()) {
             GUIUtil.showTooltip(mouseX, mouseY, tooltipSupplier.get());

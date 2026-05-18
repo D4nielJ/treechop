@@ -1,7 +1,5 @@
 package ht.treechop.client.gui.screen;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import ht.treechop.TreeChop;
 import ht.treechop.TreeChopException;
 import ht.treechop.client.Client;
@@ -10,7 +8,7 @@ import ht.treechop.client.settings.ClientChopSettings;
 import ht.treechop.common.chop.ChopUtil;
 import ht.treechop.common.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -23,7 +21,7 @@ public class ChopIndicator {
 
     private static final double IMAGE_SCALE = 1.0;
 
-    public static void render(GuiGraphics gui, int windowWidth, int windowHeight) {
+    public static void render(GuiGraphicsExtractor gui, int windowWidth, int windowHeight) {
         Minecraft minecraft = Minecraft.getInstance();
         HitResult mouseOver = minecraft.hitResult;
         Player player = minecraft.player;
@@ -37,14 +35,6 @@ public class ChopIndicator {
             ) {
                 BlockPos blockPos = ((BlockHitResult) mouseOver).getBlockPos();
                 if (blockCanBeChopped(blockPos)) {
-                    RenderSystem.enableBlend();
-                    RenderSystem.blendFuncSeparate(
-                            GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR,
-                            GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR,
-                            GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO
-                    );
-                    RenderSystem.setShaderTexture(0, Sprite.TEXTURE_PATH);
-
                     boolean mirror = player.getMainArm() == HumanoidArm.LEFT;
                     int indicatorCenterX = windowWidth / 2 + ConfigHandler.CLIENT.indicatorXOffset.get() * (mirror ? -1 : 1);
                     int indicatorCenterY = windowHeight / 2 + ConfigHandler.CLIENT.indicatorYOffset.get();
@@ -61,9 +51,6 @@ public class ChopIndicator {
                             imageHeight,
                             mirror
                     );
-
-                    RenderSystem.defaultBlendFunc();
-                    RenderSystem.disableBlend();
                 }
             }
         } catch (Exception e) {

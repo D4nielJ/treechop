@@ -1,9 +1,7 @@
 package ht.treechop.client.gui.util;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.resources.Identifier;
 
 public enum Sprite {
     CHOP_INDICATOR(0, 0, 20, 20),
@@ -22,8 +20,8 @@ public enum Sprite {
     HIGHLIGHTED_PAGE_TWO(32, 100, 32, 20),
     ;
 
-    public static final ResourceLocation TEXTURE_PATH =
-            ResourceLocation.fromNamespaceAndPath("treechop", "textures/gui/widgets.png");
+    public static final Identifier TEXTURE_PATH =
+            Identifier.fromNamespaceAndPath("treechop", "textures/gui/widgets.png");
     public static final int TEXTURE_WIDTH = 64;
     public static final int TEXTURE_HEIGHT = 120;
 
@@ -40,27 +38,23 @@ public enum Sprite {
     }
 
     public static void setRenderState(float alpha) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, Sprite.TEXTURE_PATH);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
+        // No-op: use GuiGraphicsExtractor.blit() which handles texture setup internally
     }
 
-    public void blit(GuiGraphics gui, int x, int y) {
+    public void blit(GuiGraphicsExtractor gui, int x, int y) {
         blit(gui, x, y, width, height);
     }
 
-    public void blit(GuiGraphics gui, int x, int y, int width, int height) {
+    public void blit(GuiGraphicsExtractor gui, int x, int y, int width, int height) {
         blit(gui, x, y, width, height, false);
     }
 
-    public void blit(GuiGraphics gui, int x, int y, int width, int height, boolean mirror) {
-        float u = mirror ? this.u + this.width : this.u;
-        int uw = mirror ? -this.width : this.width;
-        gui.blit(TEXTURE_PATH, x, y, width, height, u, v, uw, this.height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+    public void blit(GuiGraphicsExtractor gui, int x, int y, int width, int height, boolean mirror) {
+        float u0 = (mirror ? this.u + this.width : this.u) / (float) TEXTURE_WIDTH;
+        float u1 = (mirror ? this.u : this.u + this.width) / (float) TEXTURE_WIDTH;
+        float v0 = this.v / (float) TEXTURE_HEIGHT;
+        float v1 = (this.v + this.height) / (float) TEXTURE_HEIGHT;
+        gui.blit(TEXTURE_PATH, x, y, x + width, y + height, u0, u1, v0, v1);
     }
 
 }

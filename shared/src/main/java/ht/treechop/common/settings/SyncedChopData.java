@@ -51,7 +51,7 @@ public class SyncedChopData {
             Optional<Boolean> isSynced = getBoolean(tag, IS_SYNCED_KEY);
 
             SneakBehavior defaultSneakBehavior = ConfigHandler.defaultChopSettings.get().getSneakBehavior();
-            String sneakBehaviorId = (tag.contains(SNEAK_BEHAVIOR_KEY)) ? tag.getString(SNEAK_BEHAVIOR_KEY) : "";
+            String sneakBehaviorId = (tag.contains(SNEAK_BEHAVIOR_KEY)) ? tag.getString(SNEAK_BEHAVIOR_KEY).orElse("") : "";
             if (sneakBehaviorId.isEmpty()) {
                 settings.setSneakBehavior(defaultSneakBehavior);
             } else {
@@ -59,7 +59,7 @@ public class SyncedChopData {
                 try {
                     sneakBehavior = SneakBehavior.valueOf(sneakBehaviorId);
                 } catch (IllegalArgumentException e) {
-                    TreeChop.LOGGER.warn(String.format("NBT contains bad sneak behavior value \"%s\"; using default value \"%s\"", tag.getString(SNEAK_BEHAVIOR_KEY), defaultSneakBehavior.name()));
+                    TreeChop.LOGGER.warn(String.format("NBT contains bad sneak behavior value \"%s\"; using default value \"%s\"", tag.getString(SNEAK_BEHAVIOR_KEY).orElse(""), defaultSneakBehavior.name()));
                     sneakBehavior = defaultSneakBehavior;
                 }
                 settings.setSneakBehavior(sneakBehavior);
@@ -79,7 +79,7 @@ public class SyncedChopData {
 
     protected Optional<Boolean> getBoolean(CompoundTag CompoundTag, String key) {
         return (CompoundTag.contains(key))
-                ? Optional.of(CompoundTag.getBoolean(key))
+                ? CompoundTag.getBoolean(key).map(b -> b)
                 : Optional.empty();
     }
 }

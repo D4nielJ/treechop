@@ -2,7 +2,7 @@ package ht.treechop.common.config.resource;
 
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class ResourceTagIdentifier extends ResourceIdentifier {
 
     @Override
     public <R extends DefaultedRegistry<T>, T> Stream<T> resolve(R registry) {
-        ResourceLocation tagId = ResourceLocation.tryParse(getNamespace() + ":" + getLocalSpace());
+        Identifier tagId = Identifier.tryParse(getNamespace() + ":" + getLocalSpace());
         if (tagId != null) {
             TagKey<T> tag = TagKey.create(registry.key(), tagId);
             return StreamSupport.stream(registry.getTagOrEmpty(tag).spliterator(), false).map(Holder::value);

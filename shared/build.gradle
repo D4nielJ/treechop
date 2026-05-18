@@ -1,13 +1,10 @@
 plugins {
-    id "org.spongepowered.gradle.vanilla"
+    id "net.fabricmc.fabric-loom"
 }
 
 dependencies {
+    minecraft "com.mojang:minecraft:$minecraft_version"
     compileOnly "org.spongepowered:mixin:0.8.5"
     compileOnly "fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:$forgeconfigapiport_version"
     compileOnly project(":tuber")
-}
-
-minecraft {
-    version(minecraft_version)
 }

@@ -1,28 +1,19 @@
 package ht.treechop.client.model;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
+import java.util.function.Predicate;
 
 public class HiddenChoppedLogBakedModel extends ChoppedLogBakedModel {
-    private final List<BakedQuad> quads;
-
-    public HiddenChoppedLogBakedModel() {
-        this(Collections.emptyList());
-    }
-
-    public HiddenChoppedLogBakedModel(List<BakedQuad> quads) {
-        this.quads = quads;
-    }
-
+    // Emits no quads - used when Sodium is present without Indium
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState blockState, @Nullable Direction direction, @NotNull RandomSource random) {
-        return quads;
+    public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
+        // Intentionally empty - hidden rendering uses block entity renderer instead
     }
 }
+

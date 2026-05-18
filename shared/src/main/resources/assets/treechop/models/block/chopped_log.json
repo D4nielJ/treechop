@@ -1,5 +1,4 @@
 {
-  "variants": {
-    "chopped_log": { "model": "treechop:block/chopped_log" }
-  }
+  "parent": "minecraft:block/oak_log",
+  "textures": {}
 }

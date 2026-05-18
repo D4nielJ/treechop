@@ -86,7 +86,8 @@ public abstract class Client {
     public static void handleUpdateChopsPacket(BlockPos pos, CompoundTag tag) {
         Level level = Minecraft.getInstance().level;
         if (level != null && level.getBlockEntity(pos) instanceof ChoppedLogBlock.MyEntity entity) {
-            entity.loadWithComponents(tag, level.registryAccess());
+            entity.loadWithComponents(net.minecraft.world.level.storage.TagValueInput.create(
+                    net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(), tag));
         }
     }
 

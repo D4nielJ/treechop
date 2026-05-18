@@ -1,31 +1,30 @@
 package ht.treechop.client.model;
 
-import ht.treechop.TreeChop;
+import ht.treechop.common.registry.FabricModBlocks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public class ChoppedLogModelLoadingPlugin implements ModelLoadingPlugin {
-    private static final ResourceLocation CHOPPED_LOG = TreeChop.resource("block/chopped_log");
-    private final Supplier<ChoppedLogBakedModel> model;
+    private final Supplier<ChoppedLogBakedModel> modelSupplier;
 
-    public ChoppedLogModelLoadingPlugin(Supplier<ChoppedLogBakedModel> model) {
-        this.model = model;
+    public ChoppedLogModelLoadingPlugin(Supplier<ChoppedLogBakedModel> modelSupplier) {
+        this.modelSupplier = modelSupplier;
     }
 
     @Override
-    public void onInitializeModelLoader(Context pluginContext) {
-        pluginContext.modifyModelOnLoad().register((original, context) -> {
-            final ResourceLocation id = context.resourceId();
-            if(CHOPPED_LOG.equals(id)) {
-                return model.get();
-            } else {
-                return original;
+    public void initialize(Context pluginContext) {
+        ChoppedLogBakedModel model = modelSupplier.get();
+        pluginContext.modifyBlockModelAfterBake().register((original, context) -> {
+            if (context.state().is(FabricModBlocks.CHOPPED_LOG)) {
+                model.setWrapped(original);
+                return model;
             }
+            return original;
         });
     }
 }
+
